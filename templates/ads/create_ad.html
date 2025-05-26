@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.id %}Редактирование{% else %}Новое объявление{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">
+            {% if form.instance.id %}Редактирование объявления{% else %}Новое объявление{% endif %}
+        </h2>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.category.label_tag }}
+                        {{ form.category }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.condition.label_tag }}
+                        {{ form.condition }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.image_url.label_tag }}
+                {{ form.image_url }}
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

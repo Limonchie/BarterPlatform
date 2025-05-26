@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои предложения{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">Мои предложения</h2>
+        
+        <div class="mb-3">
+            <a href="?status=pending" class="btn btn-sm btn-outline-primary">Ожидающие</a>
+            <a href="?status=accepted" class="btn btn-sm btn-outline-success">Принятые</a>
+            <a href="?status=rejected" class="btn btn-sm btn-outline-danger">Отклоненные</a>
+            <a href="?" class="btn btn-sm btn-outline-secondary">Сбросить</a>
+        </div>
+
+        {% for proposal in page_obj %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'ad_detail' proposal.ad_sender.id %}">{{ proposal.ad_sender.title }}</a>
+                    ↔ 
+                    <a href="{% url 'ad_detail' proposal.ad_receiver.id %}">{{ proposal.ad_receiver.title }}</a>
+                </h5>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-{% if proposal.status == 'pending' %}warning{% elif proposal.status == 'accepted' %}success{% else %}danger{% endif %}">
+                            {{ proposal.get_status_display }}
+                        </span>
+                        <small class="text-muted">{{ proposal.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                    
+                    {% if proposal.status == 'pending' and proposal.ad_receiver.user == user %}
+                    <div class="btn-group">
+                        <a href="{% url 'update_proposal_status' proposal.id 'accepted' %}" 
+                           class="btn btn-sm btn-success">Принять</a>
+                        <a href="{% url 'update_proposal_status' proposal.id 'rejected' %}" 
+                           class="btn btn-sm btn-danger">Отклонить</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% include 'includes/pagination.html' %}
+    </div>
+</div>
+{% endblock %}

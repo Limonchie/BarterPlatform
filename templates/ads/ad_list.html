@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Все объявления{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Фильтры</h5>
+                <form method="get">
+                    <div class="form-group">
+                        <input type="text" name="search" class="form-control" placeholder="Поиск..." 
+                               value="{{ request.GET.search }}">
+                    </div>
+                    <div class="form-group">
+                        <select name="category" class="form-control">
+                            <option value="">Все категории</option>
+                            {% for value, label in category_choices %}
+                                <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Применить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        {% for ad in page_obj %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ ad.title }}</h5>
+                <p class="card-text">{{ ad.description|truncatechars:100 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ ad.created_at|date:"d.m.Y H:i" }}</small>
+                    <a href="{% url 'ad_detail' ad.id %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% include 'includes/pagination.html' %}
+    </div>
+</div>
+{% endblock %}
